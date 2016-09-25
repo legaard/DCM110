@@ -1,0 +1,24 @@
+{
+  "name": "DCM110",
+  "version": "1.0.0",
+  "description": "Project for the 'Designerly perspective on IoT'",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": {
+    "name": "Lasse Legaard",
+    "email": "legaard.lasse@gmail.com"
+  },
+  "keywords": [
+    "IoT",
+    "Rich Interaction"
+  ],
+  "license": "ISC",
+  "private": "true",
+  "dependencies": {
+    "particle-api-js": "^6.0.6",
+    "q": "^1.4.1",
+    "robotjs": "^0.4.4"
+  }
+}

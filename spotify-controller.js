@@ -6,7 +6,8 @@ module.exports = (function (){
   var VOLUME_INTERVAL_SIZE = 5,
       INITIAL_VOLUME_VALUE = 3;
 
-  var currentVolume = null;
+  var currentVolume = null,
+      isMuted = false;
 
   function nextSong() {
     robot.keyTap('right', ['control', 'command']);
@@ -24,6 +25,7 @@ module.exports = (function (){
   }
 
   function volumeUp() {
+    isMuted = false;
     robot.keyTap('up', 'command');
   }
 
@@ -32,7 +34,10 @@ module.exports = (function (){
   }
 
   function volumeMute() {
-    robot.keyTap('down', ['command', 'shift']);
+    if (!isMuted) {
+      robot.keyTap('down', ['command', 'shift']);
+      isMuted = true;
+    }
   }
 
   function volumeMax() {
@@ -74,6 +79,8 @@ module.exports = (function (){
   }
 
   function calibrateVolume(){
+    //Calibrate mac volume also
+
     volumeMute();
     for (var i = 0; i < INITIAL_VOLUME_VALUE; i++) {
       volumeUp();

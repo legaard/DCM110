@@ -21,19 +21,24 @@ exec('open /Applications/Spotify.app', function(err) {
   }
 });
 
-//Example: listen for light values and change volume based on that
-registerEventListener('light', function(dataObj){
-  var lightValue = dataObj.data;
+registerEventListener('changeSong', function(dataObj){
+  var changeSong = dataObj.data;
 
-  if (lightValue > 600) {
-    spotify.setVolume(5);
-  } else if (lightValue < 600 && lightValue > 400) {
-    spotify.setVolume(4);
-  } else if (lightValue < 400 && lightValue > 200) {
-    spotify.setVolume(3);
-  } else {
+  if (changeSong == 'next') {
     spotify.nextSong();
+    return;
   }
+
+  if (changeSong == 'prev') {
+    spotify.prevSong();
+    return;
+  }
+
+});
+
+registerEventListener('startPause', function(dataObj){
+  var shouldBeStarted = dataObj.data;
+  spotify.playOrPause();
 });
 
 /* PARTICLE FUNCTIONS */

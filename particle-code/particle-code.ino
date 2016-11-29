@@ -1,56 +1,65 @@
 /* Constants */
-const int poten = A0;
-const int button = D0;
-const int potenPower = A5;
+const int POWER_SLIDER = A5;
+const int POWER_BUTTON = A4;
+const int POWER_POTEN = A3;
+
+const int SLIDER = A0;
+const int BUTTON = A1;
+const int POTEN = A2;
+
+const int DELAY_TIME = 500;
+const int SLIDER_INTERVAL = 4070 / 6;
+const int POTENT_INTERVAL = 4070 / 5;
 
 /* State */
-String potenState = NULL;
-bool isPlaying = false;
+int currentVolume = -1;
+int currentLight = -1;
+bool isPlaying = true;
 
 void setup() {
   //Setup the pins
-  pinMode(poten, INPUT);
-  pinMode(potenPower, OUTPUT);
-  pinMode(button, INPUT);
-  digitalWrite(potenPower, HIGH);
+  pinMode(POWER_SLIDER, OUTPUT);
+  pinMode(POWER_BUTTON, OUTPUT);
+  pinMode(POWER_POTEN, OUTPUT);
+
+  pinMode(SLIDER, INPUT);
+  pinMode(BUTTON, INPUT);
+  pinMode(POTEN, INPUT);
+
+  digitalWrite(POWER_SLIDER, HIGH);
+  digitalWrite(POWER_POTEN, HIGH);
 
   //Open the serial connection order to print to the console
   Serial.begin(9600);
 }
 
 void loop() {
-  // Read values for poteniometer and button
-  int potenValue = analogRead(poten);
-  int buttonValue = digitalRead(button);
+  //Read butto and sensors values
+  int sliderValue = analogRead(SLIDER);
+  int buttonValue = analogRead(BUTTON);
+  int potenValue = analogRead(POTEN);
 
-  if (buttonValue == HIGH && !isPlaying) {
+  if (buttonValue > 400) {
     Particle.publish("startPause");
-    isPlaying = true;
-    delay(100);
+    Serial.println("Emitted play/pause event");
+    delay(DELAY_TIME);
   }
 
-  if (buttonValue == LOW && isPlaying) {
-    Particle.publish("startPause");
-    isPlaying = false;
-    Serial.println("The controller is laying down");
-    delay(100);
+  for(int i = 0; i < 6; i++) {
+    if (sliderValue > (SLIDER_INTERVAL * i) && sliderValue < (SLIDER_INTERVAL * (i+1)) && currentVolume != i) {
+      currentVolume = i;
+      Particle.publish("volume", String(currentVolume));
+      Serial.println("Volume set to: " + String(currentVolume));
+      delay(DELAY_TIME);
+    }
   }
 
-  if (potenValue < 500 && potenState != "prev") {
-    potenState = "prev";
-    Particle.publish("changeSong", potenState);
-    Serial.println("Previous song event emitted");
+  for(int j = 0; j < 5; j++) {
+    if (potenValue > (POTENT_INTERVAL * j) && potenValue < (POTENT_INTERVAL * (j+1)) && currentLight != (j+1)) {
+      currentLight = j+1;
+      Particle.publish("changeLight", String(currentLight));
+      Serial.println("Light set to: " + String(currentLight));
+      delay(DELAY_TIME);
+    }
   }
-
-  if (potenValue > 3500 && potenState != "next") {
-    potenState = "next";
-    Particle.publish("changeSong", potenState);
-    Serial.println("Next song event emitted");
-  }
-
-  if (potenValue < 3500 && potenValue > 500) {
-    potenState = "middle";
-  }
-
-  delay(200);
 }

@@ -1,7 +1,8 @@
  var particle = new (require('particle-api-js'))(),
      exec = require('child_process').exec,
      Q = require('q'),
-     spotify = require('./spotify-controller');
+     spotify = require('./spotify-controller'),
+     light = require('./light-controller');
 
 var FILE_NAME = 'INDEX',
     PARTICLE_ID = '410023000347343138333038',
@@ -33,12 +34,20 @@ registerEventListener('changeSong', function(dataObj){
     spotify.prevSong();
     return;
   }
-
 });
 
-registerEventListener('startPause', function(dataObj){
-  var shouldBeStarted = dataObj.data;
+registerEventListener('volume', function(dataObj) {
+  var volume = parseInt(dataObj.data);
+  spotify.setVolume(volume);
+});
+
+registerEventListener('startPause', function(dataObj) {
   spotify.playOrPause();
+});
+
+registerEventListener('changeLight', function(dataObj) {
+  var lightPresetNumber = dataObj.data;
+  light.writeToPort(lightPresetNumber);
 });
 
 /* PARTICLE FUNCTIONS */

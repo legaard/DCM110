@@ -6,6 +6,10 @@
   "scripts": {
     "start": "node index.js"
   },
+  "eslintConfig": {
+    "ecmaVersion": 5,
+    "sourceType": "module"
+  },
   "author": {
     "name": "Lasse Legaard",
     "email": "legaard.lasse@gmail.com"
@@ -19,6 +23,7 @@
   "dependencies": {
     "particle-api-js": "^6.0.6",
     "q": "^1.4.1",
-    "robotjs": "^0.4.4"
+    "robotjs": "^0.4.2",
+    "serialport": "^4.0.3"
   }
 }

@@ -24,6 +24,39 @@ module.exports = (function (){
     console.log(FILE_NAME, '==>', 'Song played/paused');
   }
 
+  function searchAndSelect(searchValue) {
+    //Set the 'focus field' and delete existing text (if any)
+    robot.keyTap('f', ['alt', 'command']);
+    robot.keyTap('delete');
+
+    // Split word into array of characters
+    var characters = searchValue.toLowerCase().split('');
+
+    // Replace all ' ' with 'space' and type word
+    characters.map(function(character){
+      if(character === ' '){
+        return 'space';
+      } else {
+        return character;
+      }
+    }).forEach(function(character){
+      robot.keyTap(character);
+    });
+
+    //Make sure that spotify has found search results first
+    setTimeout(function() {
+      robot.keyTap('down');
+      robot.keyTap('enter');
+
+      setTimeout(function(){
+        robot.moveMouse(600, 280);
+        robot.mouseClick();
+        console.log(FILE_NAME, '==>', 'Search for and selected:', searchValue);
+      }, 250);
+
+    }, 250);
+  }
+
   function volumeUp() {
     isMuted = false;
     robot.keyTap('up', 'command');
@@ -59,6 +92,7 @@ module.exports = (function (){
 
     // If the new value is the same --> do nothing
     if (volumeDiff === 0) {
+      volumeMute();
       return;
     }
 
@@ -79,8 +113,6 @@ module.exports = (function (){
   }
 
   function calibrateVolume(){
-    //Calibrate mac volume also
-
     volumeMute();
     for (var i = 0; i < INITIAL_VOLUME_VALUE; i++) {
       volumeUp();
@@ -96,6 +128,7 @@ module.exports = (function (){
     setVolume: setVolume,
     volumeMute: volumeMute,
     volumeMax: volumeMax,
+    searchAndSelect: searchAndSelect,
     calibrateVolume: calibrateVolume
   };
 })();
